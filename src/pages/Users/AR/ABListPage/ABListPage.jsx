@@ -125,15 +125,15 @@ export default function ABListPage() {
                                    // /viewABUpdate/updateAB/:course_id/:course_name/:student_id/:grade/:marks_table_exam_type/:academic_year/:exam_type/:midORend
                       }}
                   >
-                    <td>{element[0]}</td>           
-                    <td>{element[1]}</td>          
-                    <td>{element[8]}</td>          
-                    <td>{element[2]}</td>           
-                    <td>{element[3]}</td>           
-                    <td>{element[4]}</td>          
-                    <td>{element[5]}</td>           
-                    <td>{element[10]}</td>          
-                    <td>{element[9]}</td>           
+                    <td>{element[0]}</td>     {/*Level*/}          
+                    <td>{element[1]}</td>     {/*Semester*/}
+                    <td>{element[8]}</td>     {/*Academic year*/}     
+                    <td>{element[2]}</td>     {/*Course ID*/}
+                    <td>{element[3]}</td>     {/*Course Name*/}
+                    <td>{element[4]}</td>     {/*Student ID*/}
+                    <td>{element[5]}</td>     {/*Score*/}
+                    <td>{element[10]}</td>    {/*Exam*/}
+                    <td>{element[9]}</td>     {/*Exam type*/}
                   </tr>
                 ))}
 
