@@ -69,6 +69,15 @@ export default function UpdateABPage() {
     }
 
 
+    const checkMedicalForAB = async() => {          //Function to new update
+        try{
+            const result = await axios.get(`http://localhost:9090/api/AssistantRegistrar/checkMedicalForAB`);       //New API
+        } catch(e){
+            console.log(e)
+        }
+    }
+
+
 
 
 
