@@ -70,11 +70,18 @@ export default function UpdateABPage() {
 
 
     const checkMedicalForAB = async() => {          //Function to new update
+
         try{
-            const result = await axios.get(`http://localhost:9090/api/AssistantRegistrar/checkMedicalForAB`);       //New API
+            console.log("Hi");
+            const result = await axios.post(`http://localhost:9090/api/AssistantRegistrar/checkMedicalForAB`, studentDetails);       //New API with passing student details object
+        
+        
+            
         } catch(e){
             console.log(e)
         }
+
+        
     }
 
 
@@ -662,7 +669,8 @@ export default function UpdateABPage() {
           }
       
         
-        loadAllMedicalSubmissions();        //Load the medical submission details when the page is loaded
+        // loadAllMedicalSubmissions();        //Load the medical submission details when the page is loaded
+        checkMedicalForAB();            //New function (All process brings to backend)
     },[]);
 
 
