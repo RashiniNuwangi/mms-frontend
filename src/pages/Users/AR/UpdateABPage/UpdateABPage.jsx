@@ -22,6 +22,7 @@ export default function UpdateABPage() {
     const [medicalListUploaded,setMedicalListUploaded]=useState(false);     //Use state to store whether the medical list is uploaded or not
     const [stateOfTheMedicalSubmission,setStateOfTheMedicalSubmission]=useState('');    //Use state to store the state of the medical submission
     const [stateOfTheMedicalSubmissionColor,setStateOfTheMedicalSubmissionColor]=useState('');    //Use state to store the color of the medical submission state
+    const [checkMedicalForABResult,setCheckMedicalForABResult]=useState(false);    //Use state to store the result of the check medical for AB
 
     const [loading,setLoading] = useState(false); //Use state to store the loading state
 
@@ -74,7 +75,8 @@ export default function UpdateABPage() {
         try{
             console.log("Hi");
             const result = await axios.post(`http://localhost:9090/api/AssistantRegistrar/checkMedicalForAB`, studentDetails);       //New API with passing student details object
-        
+            console.log(result);
+            setCheckMedicalForABResult(result.data);    //Set the result of the check medical for AB
         
             
         } catch(e){
@@ -86,7 +88,7 @@ export default function UpdateABPage() {
 
 
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     const loadAllMedicalSubmissions = async() => {   //Function to load the medical submission details from the backend
@@ -142,6 +144,8 @@ export default function UpdateABPage() {
         
     };
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
 
 
@@ -690,58 +694,74 @@ export default function UpdateABPage() {
                         <label style={{marginLeft:"10px"}}> Loading data</label>
                     </div>
                 ):(
-                    medicalListUploaded ? (
-                        <form>
-                            <table className='dataTable' style={{width:"100%"}}>
-                                <tbody>
-                                    <tr>
-                                        <td style={{paddingBottom:"10px"}}><label className="labelkey" style={{fontWeight:"bold"}}>Student ID: </label></td>
-                                        <td style={{paddingBottom:"10px"}}> <label className='labelValue' style={{width:"100%",marginLeft:"auto",marginRight:"auto",paddingLeft:"10px",paddingTop:"2px",paddingBottom:"2px",backgroundColor:"#ffffff",borderRadius:"10px",border:"1px solid #a1a1a138",boxShadow:"0 0 10px rgba(0, 0, 0, 0.1)"}}>{studentDetails.student_id}</label> </td>
-                                    </tr>
-                                    <tr>
-                                        <td style={{paddingBottom:"10px"}}><label className="labelkey"style={{fontWeight:"bold"}}>Course ID: </label></td>
-                                        <td style={{paddingBottom:"10px"}}> <label className='labelValue' style={{width:"100%",marginLeft:"auto",marginRight:"auto",paddingLeft:"10px",paddingTop:"2px",paddingBottom:"2px",backgroundColor:"#ffffff",borderRadius:"10px",border:"1px solid #a1a1a138",boxShadow:"0 0 10px rgba(0, 0, 0, 0.1)"}}>{studentDetails.course_id}</label> </td>
-                                    </tr>
-                                    <tr>
-                                        <td style={{paddingBottom:"10px"}}><label className="labelkey" style={{fontWeight:"bold"}}>Course name: </label></td>
-                                        <td style={{paddingBottom:"10px"}}> <label className='labelValue' style={{width:"100%",marginLeft:"auto",marginRight:"auto",paddingLeft:"10px",paddingTop:"2px",paddingBottom:"2px",backgroundColor:"#ffffff",borderRadius:"10px",border:"1px solid #a1a1a138",boxShadow:"0 0 10px rgba(0, 0, 0, 0.1)"}}>{studentDetails.course_name}</label> </td>
-                                    </tr>
-                                    <tr>
-                                        <td style={{paddingBottom:"10px"}}><label className="labelkey" style={{fontWeight:"bold"}}>Exam: </label></td>
-                                        <td style={{paddingBottom:"10px"}}> <label className='labelValue' style={{width:"100%",marginLeft:"auto",marginRight:"auto",paddingLeft:"10px",paddingTop:"2px",paddingBottom:"2px",backgroundColor:"#ffffff",borderRadius:"10px",border:"1px solid #a1a1a138",boxShadow:"0 0 10px rgba(0, 0, 0, 0.1)"}}>{studentDetails.exam_type}</label> </td>
-                                    </tr>
-                                    <tr>
-                                        <td style={{paddingBottom:"10px"}}><label className="labelkey" style={{fontWeight:"bold"}}>Exam type: </label></td>
-                                        <td style={{paddingBottom:"10px"}}> <label className='labelValue' style={{width:"100%",marginLeft:"auto",marginRight:"auto",paddingLeft:"10px",paddingTop:"2px",paddingBottom:"2px",backgroundColor:"#ffffff",borderRadius:"10px",border:"1px solid #a1a1a138",boxShadow:"0 0 10px rgba(0, 0, 0, 0.1)"}}>{studentDetails.marks_table_exam_type}</label> </td>
-                                    </tr>
-                                    <tr>
-                                        <td style={{paddingBottom:"10px"}}><label className="labelkey" style={{fontWeight:"bold"}}>Academic year: </label></td>
-                                        <td style={{paddingBottom:"10px"}}> <label className='labelValue' style={{width:"100%",marginLeft:"auto",marginRight:"auto",paddingLeft:"10px",paddingTop:"2px",paddingBottom:"2px",backgroundColor:"#ffffff",borderRadius:"10px",border:"1px solid #a1a1a138",boxShadow:"0 0 10px rgba(0, 0, 0, 0.1)"}}>{studentDetails.academic_year}</label> </td>
-                                    </tr>
-                                    <tr>
-                                        <td style={{paddingBottom:"10px"}}><label className="labelkey" style={{fontWeight:"bold"}}>Current score: </label></td>
-                                        <td style={{paddingBottom:"10px"}}> <label className='labelValue' style={{width:"100%",marginLeft:"auto",marginRight:"auto",paddingLeft:"10px",paddingTop:"2px",paddingBottom:"2px",backgroundColor:"#ffffff",borderRadius:"10px",border:"1px solid #a1a1a138",boxShadow:"0 0 10px rgba(0, 0, 0, 0.1)"}}>{studentDetails.grade}</label> </td>
-                                    </tr>
-                                    <tr>
-                                        <td style={{paddingBottom:"10px"}}><label className="labelkey" style={{fontWeight:"bold"}}>New score: </label></td>
-                                        <td style={{paddingBottom:"10px"}}> <label className='labelValue' style={{width:"100%",marginLeft:"auto",marginRight:"auto",paddingLeft:"10px",paddingTop:"2px",paddingBottom:"2px",backgroundColor:"#ffffff",borderRadius:"10px",border:"1px solid #a1a1a138",boxShadow:"0 0 10px rgba(0, 0, 0, 0.1)",color:stateOfTheMedicalSubmissionColor,fontWeight:'bold'}} >{newScore}</label> </td>
-                                    </tr>
-                                    <tr>
-                                        {stateOfTheMedicalSubmissionColor==="green" ? (
-                                            <td colSpan={2} ><label className="statusLabel" style={{color:'#1f9e50',width:"100%",textAlign:"center",marginTop:"20px",fontSize:"18px",fontWeight:"bold"}}>{stateOfTheMedicalSubmission}</label></td>
-                                        ):(
-                                            <td colSpan={2} ><label className="statusLabel" style={{color:'#d31a1a',width:"100%",textAlign:"center",marginTop:"20px",fontSize:"18px",fontWeight:"bold"}}>{stateOfTheMedicalSubmission}</label></td>
-                                        )}
-                                        
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </form>
+                    checkMedicalForABResult !=false ? (
+
+                        checkMedicalForABResult.code == "05" ? (        //If error occured
+
+                            <div className="alert alert-danger" role="alert" style={{marginTop:'100px',textAlign:'center',width:'80%',marginLeft:'auto',marginRight:'auto'}}>
+                                <h5>{checkMedicalForABResult.message}</h5>              {/*Error occurred while checking medical submissions...*/}
+                            </div>
+
+                        ):(
+                            
+                            checkMedicalForABResult.code == "01" ? (        //If no data found
+                                <div className="alert alert-danger" role="alert" style={{marginTop:'100px',textAlign:'center',width:'80%',marginLeft:'auto',marginRight:'auto'}}>
+                                    <h5>{checkMedicalForABResult.message}</h5>              {/*No data found...*/}
+                                </div>
+                            ):(
+                                <form>
+                                    <table className='dataTable' style={{width:"100%"}}>
+                                        <tbody>
+                                            <tr>
+                                                <td style={{paddingBottom:"10px"}}><label className="labelkey" style={{fontWeight:"bold"}}>Student ID: </label></td>
+                                                <td style={{paddingBottom:"10px"}}> <label className='labelValue' style={{width:"100%",marginLeft:"auto",marginRight:"auto",paddingLeft:"10px",paddingTop:"2px",paddingBottom:"2px",backgroundColor:"#ffffff",borderRadius:"10px",border:"1px solid #a1a1a138",boxShadow:"0 0 10px rgba(0, 0, 0, 0.1)"}}>{studentDetails.student_id}</label> </td>
+                                            </tr>
+                                            <tr>
+                                                <td style={{paddingBottom:"10px"}}><label className="labelkey"style={{fontWeight:"bold"}}>Course ID: </label></td>
+                                                <td style={{paddingBottom:"10px"}}> <label className='labelValue' style={{width:"100%",marginLeft:"auto",marginRight:"auto",paddingLeft:"10px",paddingTop:"2px",paddingBottom:"2px",backgroundColor:"#ffffff",borderRadius:"10px",border:"1px solid #a1a1a138",boxShadow:"0 0 10px rgba(0, 0, 0, 0.1)"}}>{studentDetails.course_id}</label> </td>
+                                            </tr>
+                                            <tr>
+                                                <td style={{paddingBottom:"10px"}}><label className="labelkey" style={{fontWeight:"bold"}}>Course name: </label></td>
+                                                <td style={{paddingBottom:"10px"}}> <label className='labelValue' style={{width:"100%",marginLeft:"auto",marginRight:"auto",paddingLeft:"10px",paddingTop:"2px",paddingBottom:"2px",backgroundColor:"#ffffff",borderRadius:"10px",border:"1px solid #a1a1a138",boxShadow:"0 0 10px rgba(0, 0, 0, 0.1)"}}>{studentDetails.course_name}</label> </td>
+                                            </tr>
+                                            <tr>
+                                                <td style={{paddingBottom:"10px"}}><label className="labelkey" style={{fontWeight:"bold"}}>Exam: </label></td>
+                                                <td style={{paddingBottom:"10px"}}> <label className='labelValue' style={{width:"100%",marginLeft:"auto",marginRight:"auto",paddingLeft:"10px",paddingTop:"2px",paddingBottom:"2px",backgroundColor:"#ffffff",borderRadius:"10px",border:"1px solid #a1a1a138",boxShadow:"0 0 10px rgba(0, 0, 0, 0.1)"}}>{studentDetails.exam_type}</label> </td>
+                                            </tr>
+                                            <tr>
+                                                <td style={{paddingBottom:"10px"}}><label className="labelkey" style={{fontWeight:"bold"}}>Exam type: </label></td>
+                                                <td style={{paddingBottom:"10px"}}> <label className='labelValue' style={{width:"100%",marginLeft:"auto",marginRight:"auto",paddingLeft:"10px",paddingTop:"2px",paddingBottom:"2px",backgroundColor:"#ffffff",borderRadius:"10px",border:"1px solid #a1a1a138",boxShadow:"0 0 10px rgba(0, 0, 0, 0.1)"}}>{studentDetails.marks_table_exam_type}</label> </td>
+                                            </tr>
+                                            <tr>
+                                                <td style={{paddingBottom:"10px"}}><label className="labelkey" style={{fontWeight:"bold"}}>Academic year: </label></td>
+                                                <td style={{paddingBottom:"10px"}}> <label className='labelValue' style={{width:"100%",marginLeft:"auto",marginRight:"auto",paddingLeft:"10px",paddingTop:"2px",paddingBottom:"2px",backgroundColor:"#ffffff",borderRadius:"10px",border:"1px solid #a1a1a138",boxShadow:"0 0 10px rgba(0, 0, 0, 0.1)"}}>{studentDetails.academic_year}</label> </td>
+                                            </tr>
+                                            <tr>
+                                                <td style={{paddingBottom:"10px"}}><label className="labelkey" style={{fontWeight:"bold"}}>Current score: </label></td>
+                                                <td style={{paddingBottom:"10px"}}> <label className='labelValue' style={{width:"100%",marginLeft:"auto",marginRight:"auto",paddingLeft:"10px",paddingTop:"2px",paddingBottom:"2px",backgroundColor:"#ffffff",borderRadius:"10px",border:"1px solid #a1a1a138",boxShadow:"0 0 10px rgba(0, 0, 0, 0.1)"}}>{studentDetails.grade}</label> </td>
+                                            </tr>
+                                            <tr>
+                                                <td style={{paddingBottom:"10px"}}><label className="labelkey" style={{fontWeight:"bold"}}>New score: </label></td>
+                                                <td style={{paddingBottom:"10px"}}> <label className='labelValue' style={{width:"100%",marginLeft:"auto",marginRight:"auto",paddingLeft:"10px",paddingTop:"2px",paddingBottom:"2px",backgroundColor:"#ffffff",borderRadius:"10px",border:"1px solid #a1a1a138",boxShadow:"0 0 10px rgba(0, 0, 0, 0.1)",color:stateOfTheMedicalSubmissionColor,fontWeight:'bold'}} >{newScore}</label> </td>
+                                            </tr>
+                                            <tr>
+                                                {stateOfTheMedicalSubmissionColor==="green" ? (
+                                                    <td colSpan={2} ><label className="statusLabel" style={{color:'#1f9e50',width:"100%",textAlign:"center",marginTop:"20px",fontSize:"18px",fontWeight:"bold"}}>{stateOfTheMedicalSubmission}</label></td>
+                                                ):(
+                                                    <td colSpan={2} ><label className="statusLabel" style={{color:'#d31a1a',width:"100%",textAlign:"center",marginTop:"20px",fontSize:"18px",fontWeight:"bold"}}>{stateOfTheMedicalSubmission}</label></td>
+                                                )}
+                                                
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </form>
+                            )
+                        )
+                        
                     ):(
-                        <div className="alert alert-danger" role="alert" style={{marginTop:'100px',textAlign:'center',width:'80%',marginLeft:'auto',marginRight:'auto'}}>
-                            <h5>Medical List is pending...</h5>
-                        </div>
+                        null
                     )
+                    
                 )
                 
             }
