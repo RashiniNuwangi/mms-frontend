@@ -104,6 +104,8 @@ export default function UpdateABPage() {
                     }
                     
                     
+                }else{
+                    toast.error(result.data.message,{autoClose:2000});     //Show a toast message
                 }
             
             
@@ -195,8 +197,6 @@ export default function UpdateABPage() {
 
             setLoading(false);
 
-            console.log("lebgth" , repeatStatus.data[0])
-
             // if(repeatStatus.data.length>0){    //condition to check whether the repeat status is not available
                 
                 if(repeatStatus.data[0].is_repeat==0){    //condition to check whether the selected student dont have marks in previous academic year (meanse the student is a propper student)
@@ -225,28 +225,28 @@ export default function UpdateABPage() {
                                 
                                     const attendanceEligibility = await axios.get(`http://localhost:9090/api/AssistantRegistrar/getAttendanceEligibilityByStudentIdAndCourseId/${studentDetails.student_id}/${studentDetails.course_id}`);
                                     
-                                    if(attendanceEligibility.data.code == "05"){
+                                    if(attendanceEligibility.data.code == "05"){                                        //Condition if there is an error with getting attendance eligibility
                                         toast.error('Error with getting attendance eligibility',{autoClose:2000});
                                         
                                         setTimeout(() => {
                                             history.goBack();     //Back to the previous page
                                         }, 2000);
                                         return;
-                                    }else if(attendanceEligibility.data.code == "01"){
+                                    }else if(attendanceEligibility.data.code == "01"){                  //Condition if there is no attendance eligibility found
                                         toast.error('No attendance eligibility found',{autoClose:2000});
                                         
                                         setTimeout(() => {
                                             history.goBack();     //Back to the previous page
                                         }, 2000);
                                         return;
-                                    } else if (attendanceEligibility.data.code == "00"){
+                                    } else if (attendanceEligibility.data.code == "00"){                //Condition if the attendance eligibility is found
 
                                         console.log(attendanceEligibility.data.content);
-                                        if(attendanceEligibility.data.content.eligibility.toLowerCase() == "Not eligible".toLowerCase()){
+                                        if(attendanceEligibility.data.content.eligibility.toLowerCase() == "Not eligible".toLowerCase()){       //if the attendance eligibility is not eligible
                                             console.log("Not eligible----------++++++++")
-                                            existingGrade.overall_ca_eligibility="Not eligible";
-                                        } else if (attendanceEligibility.data.content.eligibility.toLowerCase() == "Eligible".toLocaleLowerCase() ){
-                                            existingGrade.overall_ca_eligibility="Eligible";
+                                            existingGrade.overall_ca_eligibility="Not eligible";                    //Set the overall ca eligibility to not eligible
+                                        } else if (attendanceEligibility.data.content.eligibility.toLowerCase() == "Eligible".toLocaleLowerCase() ){        //if the attendance eligibility is eligible
+                                            existingGrade.overall_ca_eligibility="Eligible";                        //Set the overall ca eligibility to eligible
                                             console.log("Eligible------------++++++++")
                                         }
                                     }
@@ -262,6 +262,21 @@ export default function UpdateABPage() {
                             const updateGradeResult= await axios.put(`http://localhost:9090/api/AssistantRegistrar/updateStudentFinalGrade`,existingGrade);   //Update the  grade of a propper student with the new grade and other details in Mid exam scenario 
                             toast.success('Final grade updated successfully',{autoClose:2000});     //Show a toast message
                             setLoading(false);
+
+                            try{
+                                setLoading(true);
+                                const update = await axios.put("http://localhost:9090/api/AssistantRegistrar/updateStudentScore" , updateMarksTableOject);   //Update the student AB exam score  with the new score (MC or F)
+                                if(update.data<0){     //condition to check is there a error with updating the grade
+                                    toast.error('Error with updating AB score with new score',{autoClose:2000}); 
+                                }else{
+                                    toast.success('New score updated successfully',{autoClose:2000});
+                                }
+                                setLoading(false);
+                            }
+                            catch(error){
+                                toast.error(error,{autoClose:2000});
+                                console.log(error);
+                            }
                             
                         }
                         catch(error){
@@ -270,20 +285,7 @@ export default function UpdateABPage() {
                         }
 
 
-                        try{
-                            setLoading(true);
-                            const update = await axios.put("http://localhost:9090/api/AssistantRegistrar/updateStudentScore" , updateMarksTableOject);   //Update the student AB exam score  with the new score (MC or F)
-                            if(update.data<0){     //condition to check is there a error with updating the grade
-                                toast.error('Error with updating AB score with new score',{autoClose:2000}); 
-                            }else{
-                                toast.success('New score updated successfully',{autoClose:2000});
-                            }
-                            setLoading(false);
-                        }
-                        catch(error){
-                            toast.error(error,{autoClose:2000});
-                            console.log(error);
-                        }
+                        
 
                         setTimeout(() => {
                             history.goBack();     //Back to the previous page
@@ -304,7 +306,7 @@ export default function UpdateABPage() {
                                 setLoading(false);
                                 
                             
-                                if((!midExamMarksList.data.length>0) && existingGrade.ca_eligibility.toLocaleLowerCase() !=="Not eligible".toLocaleLowerCase()){    //condition if student don not have mid exam and have MC for end exam and ca eligibility is eligible
+                                if((!midExamMarksList.data.length>0) && existingGrade.ca_eligibility.toLocaleLowerCase() !=="Not eligible".toLocaleLowerCase()){    //condition if student do not have mid exam and have MC for end exam and ca eligibility is eligible
                                     
                                     if(updateMarksTableOject.new_score.toLowerCase() === 'F'.toLowerCase()){        //Check whether medical not approved (new score F )
                                         existingGrade.grade = "E*";                 //Set Grade to E*       
@@ -314,7 +316,7 @@ export default function UpdateABPage() {
                                     }
 
     
-                                }else if(midExamMarksList.data.length>0 && existingGrade.ca_eligibility.toLocaleLowerCase() !=="Not eligible".toLocaleLowerCase() ){           // condition if student have one or more mid exams and 
+                                }else if(midExamMarksList.data.length>0 && existingGrade.ca_eligibility.toLocaleLowerCase() !=="Not eligible".toLocaleLowerCase() ){           // condition if student have one or more mid exams
                                     
 
                                     
@@ -330,14 +332,14 @@ export default function UpdateABPage() {
 
 
                                     var isMidFail = false;      //Variable to store mid fail pass status
-                                    var isMidMC = false; //Variable
+                                    var isMidMC = false; //Variable to store mid MC status
                                 
                                     midExamMarksList.data.map((element)=>{                      //Map the mid exam marks list
                                         if(element.assignment_score.toLowerCase() === "F".toLowerCase()){                   //Condition to check whether the student has a F grade in the mid exam
                                             isMidFail = true;       //Set the mid fail status to true
                                         }
-                                        if(element.assignment_score.toLowerCase() === "MC".toLowerCase()){                   //Condition to check whether the student has a F grade in the mid exam
-                                            isMidMC = true;       //Set the mid fail status to true
+                                        if(element.assignment_score.toLowerCase() === "MC".toLowerCase()){                   //Condition to check whether the student has a MC grade in the mid exam
+                                            isMidMC = true;       //Set the mid mc status to true
                                         }
                                     })
     
@@ -352,10 +354,6 @@ export default function UpdateABPage() {
     
                                         }
                                     }
-                                    
-        
-                                    
-
                                     
                                 }
 

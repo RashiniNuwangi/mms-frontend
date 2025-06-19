@@ -97,9 +97,22 @@ console.log(approved_level,user,finalMarksheetList);
           <table className='table table-striped certify-table'>
             <thead className='certify-table-head'>
               <tr>
-                <th className='certify-table-heading' colSpan={100} style={{ textAlign: 'center', backgroundColor: '#ebe8e8', textAlignLast: 'center' }}>
+                {
+                    approved_level == 'Dean'?
+                    <th className='certify-table-heading' colSpan={100} style={{ textAlign: 'center', backgroundColor: '#ebe8e8', textAlignLast: 'center' }}>
+                      Marks Sheets Available <br />
+                    </th>
+                    :
+                    <th className='certify-table-heading' colSpan={100} style={{ textAlign: 'center', backgroundColor: '#ebe8e8', textAlignLast: 'center' }}>
+                      Marks Sheets Available to Certify <br />
+                    </th>
+
+
+                  }
+                {/* <th className='certify-table-heading' colSpan={100} style={{ textAlign: 'center', backgroundColor: '#ebe8e8', textAlignLast: 'center' }}>
+                  
                   Marks Sheets Available to Certify <br />
-                </th>
+                </th> */}
               </tr>
               <tr>
                 <th colSpan={100}></th>
@@ -108,7 +121,15 @@ console.log(approved_level,user,finalMarksheetList);
             <tbody>
               {!finalMarksheetList.length ? (
                 <tr>
-                  <td colSpan={100} style={{ textAlign: 'center', color: "red" }}>No Marks Sheets Available to Certify</td>
+                  <td colSpan={100} style={{ textAlign: 'center', color: "red" }}>
+                    {
+                      approved_level == 'Dean'?
+                        "No Marks Sheets Available"
+                        :
+                        "No Marks Sheets Available to Certify"
+                    }
+                    {/* No Marks Sheets Available to Certify */}
+                  </td>
                 </tr>
               ) : (
                 finalMarksheetList.map((item, index) => (
