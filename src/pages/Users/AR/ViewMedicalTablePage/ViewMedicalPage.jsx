@@ -23,85 +23,86 @@ export default function ViewMedicalPage() {
     fetchData(value);                                     // fetch the data according to the selected value
   };
 
-    const fetchData = async (value)=>{                                // function to fetch the data according to the selected value
+  const fetchData = async (value)=>{                                // function to fetch the data according to the selected value
 
-      setLoading(true);                                     // set loading to true before fetching data
+    setLoading(true);                                     // set loading to true before fetching data
 
-      if(value==='All Years'){                                        // if the selected value is 'All Years'
+    if(value==='All Years'){                                        // if the selected value is 'All Years'
 
-        try{                                                        // get all medical submissions
+      try{                                                        // get all medical submissions
 
-          const response = await axios.get(`http://localhost:9090/api/AssistantRegistrar/getAllMedicalSubmissions`);       // get all medical submissions
+        const response = await axios.get(`http://localhost:9090/api/AssistantRegistrar/getAllMedicalSubmissions`);       // get all medical submissions
 
-          if(response.data.length>0){                  // if medical submissions are available
+        if(response.data.length>0){                  // if medical submissions are available
 
-            setMedicalAvailability(true);               // set medical availability to true
-            setMedicalSubmissions(response.data);       // set medical submissions
-            const uniqueArr = [...new Set(response.data.map((item)=>item.academic_year))];      // get unique academic years
-            setUniqueYears(uniqueArr);                 // set unique academic years
-            
-          }else{                    // if medical submissions are not available
-            
-            setMedicalAvailability(false);          // set medical availability to false
-          }
+          setMedicalAvailability(true);               // set medical availability to true
+          setMedicalSubmissions(response.data);       // set medical submissions
+          const uniqueArr = [...new Set(response.data.map((item)=>item.academic_year))];      // get unique academic years
+          setUniqueYears(uniqueArr);                 // set unique academic years
           
+        }else{                    // if medical submissions are not available
           
-          setLoading(false);         // set loading to false after fetching data
-
-        }catch(err){
-          toast.error("Error fetching data",{autoClose:3000});
+          setMedicalAvailability(false);          // set medical availability to false
         }
-      }else{                        // if the selected value is not 'All Years'
+        
+        
+        setLoading(false);         // set loading to false after fetching data
 
-        try{                    // get medical submissions by the selected year
-          const encodedValue = encodeURIComponent(value);       // encode the selected value
-          const response = await axios.get(`http://localhost:9090/api/AssistantRegistrar/getAllMedicalSubmissionsByYear/${value}`);       // get medical submissions by the selected year
+      }catch(err){
+        toast.error("Error fetching data",{autoClose:3000});
+      }
+    }else{                        // if the selected value is not 'All Years'
 
-          if(response.data.length>0){       // if medical submissions are available
+      try{                    // get medical submissions by the selected year
+        const encodedValue = encodeURIComponent(value);       // encode the selected value
+        const response = await axios.get(`http://localhost:9090/api/AssistantRegistrar/getAllMedicalSubmissionsByYear/${value}`);       // get medical submissions by the selected year
 
-            setMedicalAvailability(true);       // set medical availability to true
-            setMedicalSubmissions(response.data);       // set medical submissions
+        if(response.data.length>0){       // if medical submissions are available
 
-            const allResponse = await axios.get(`http://localhost:9090/api/AssistantRegistrar/getAllMedicalSubmissions`);       // get all medical submissions go get unique years
-            const uniqueArr = [...new Set(allResponse.data.map((item)=>item.academic_year))];                                     // get unique academic years
-            setUniqueYears(uniqueArr);                                                                                // set unique academic years
-            
-          }else{            // if medical submissions are not available
-            
-            setMedicalAvailability(false);      // set medical availability to false
-          }
+          setMedicalAvailability(true);       // set medical availability to true
+          setMedicalSubmissions(response.data);       // set medical submissions
 
-          setLoading(false);         // set loading to false after fetching data
-        }catch(err){
-          toast.error("Error fetching data",{autoClose:3000});      // show error message
+          const allResponse = await axios.get(`http://localhost:9090/api/AssistantRegistrar/getAllMedicalSubmissions`);       // get all medical submissions go get unique years
+          const uniqueArr = [...new Set(allResponse.data.map((item)=>item.academic_year))];                                     // get unique academic years
+          setUniqueYears(uniqueArr);                                                                                // set unique academic years
+          
+        }else{            // if medical submissions are not available
+          
+          setMedicalAvailability(false);      // set medical availability to false
         }
 
+        setLoading(false);         // set loading to false after fetching data
+      }catch(err){
+        toast.error("Error fetching data",{autoClose:3000});      // show error message
+      }
+
+    }
+    
+
+
+  };
+
+  const [user, setUser] = useState({});   //Use state to store user data
+  const storedData = localStorage.getItem('user');    //Get user data from local storage
+
+  
+  useEffect(()=>{                 // fetch data when the page is loaded
+
+    if(storedData){   //Check if user is logged in
+      setUser(JSON.parse(storedData));      //Set user data
+      
+      if(JSON.parse(storedData).role != "ar"){     //Check if user is not a valid type one
+        localStorage.removeItem('user');        //Remove user data and re direct to login page
       }
       
+    }else{                          //If user is not logged in
+      history.push('/login');       //Redirect to login page
+    }
 
-
-    };
-
-    const [user, setUser] = useState({});   //Use state to store user data
-    const storedData = localStorage.getItem('user');    //Get user data from local storage
-  
-    
-    useEffect(()=>{                 // fetch data when the page is loaded
-
-      if(storedData){   //Check if user is logged in
-        setUser(JSON.parse(storedData));      //Set user data
-        
-        if(JSON.parse(storedData).role != "ar"){     //Check if user is not a valid type one
-          localStorage.removeItem('user');        //Remove user data and re direct to login page
-        }
-        
-      }else{                          //If user is not logged in
-        history.push('/login');       //Redirect to login page
-      }
-  
-        setUniqueYears([]);         // set unique years to empty array
-        fetchData(selectedOption);    // fetch data according to the selected option
-      },[]);
+      setUniqueYears([]);         // set unique years to empty array
+      fetchData(selectedOption);    // fetch data according to the selected option
+    },[]
+  );
 
 
 
